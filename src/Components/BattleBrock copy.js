@@ -1,7 +1,6 @@
 import aiteam from "./ai.json";
 import { PokeContext } from "../Context/PokeContext";
 import { useContext, useState } from "react";
-// import { BattleTeamVar } from "./battleTeam";
 
 const BattleBrock = () => {
   const { value5 } = useContext(PokeContext);
@@ -18,6 +17,7 @@ const BattleBrock = () => {
   const [pokemonOnBattle, setPokemonOnBattle] = useState();
   const [pokemonOnBattleEnnemy, setPokemonOnBattleEnnemy] = useState();
   const [ennemyBattleTeam, setEnnemyBattleTeam] = useState(aiteam);
+  const [winner, setWinner] = useState('')
 
   function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -97,18 +97,46 @@ const BattleBrock = () => {
     }
   };
 
+    /* const aliveCondition = (initialValueTeam) => {
+    initialValueTeam.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      initialValueTeam
+    );
+  };
+
+  const gameStatus = (myTeamStatus) => {
+    return aliveCondition(myTeamStatus) === 0 ? 0 : 1;
+  };
+
+  const pokemonHealthAlly = (num) => {
+    if (battleTeam.pokemon(num).pokemonHP === 0) {
+      setBattleTeam();
+    }
+  }; */
+
+  // setting wich pokemon is in combat Vsteam
+
+  const aiAtk = (pokemonOnBattleEnnemy) => {
+    if (ennnemyTeamStatus && myTeamStatus) {
+      return pokemonOnBattleEnnemy.pokemonAttacks[getRandomInt(pokemonOnBattleEnnemy.pokemonAttacks.length)].damage
+    }
+  }
 
 
-  // conf players
   const player = battleTeam.pokemon1
+
   const opponent = Brock.pokemon2
 
-  const [aiChoice, setAIChoice] = useState("");
-  const [playerChoice, setPlayerChoice]= useState("")
-  const [winner, setWinner] = useState('')
 
 
-  // fight  until one dies
+
+  while (ennnemyTeamStatus() && playerTeamStatus()) {
+    fightSequence()
+  }
+
+
+
+
   const fightSequence = () => {  // only for one fight
     if (turn === 0) {
       sequencePlayer()
@@ -128,7 +156,7 @@ const BattleBrock = () => {
     }
   }
 
-  const sequencePlayer = () => {
+  const  sequencePlayer = () => {
     //playerChoice is  "attackOne" or "attackTwo" , etc.
     const damage = player.pokemonAttacks[playerChoice].damage
     setOpponentHealth( health => health - damage)
@@ -137,12 +165,44 @@ const BattleBrock = () => {
 
   const sequenceAi = () => {
     //playerChoice is  "attackOne" or "attackTwo" , etc.
-    handleAiChoice()
     const damage = opponent.pokemonAttacks[aiChoice].damage
     setOpponentHealth( health => health - damage)
     setTurn(0)
   }
 
+
+  const atk = (player[attackOne][damage],var2) => {
+    let currentHealth = var1.health
+    currentHealth -=  var2.attack
+    setvar2()
+  }
+
+
+/*   const  playerTurn = () => {
+    which turn ? 
+    if player {
+      checkIfArenaIscleared()
+      atk()
+      checkIfArenaIscleared()
+      atk()
+      setTurn(1)
+      
+    }
+    else{
+      checkIfArenaIscleared()
+      atk()
+      checkIfArenaIscleared()
+      atk()
+      setTurn(0)
+    }
+
+  }
+ */
+  
+  // // funtion atk
+
+  const [aiChoice, setAIChoice] = useState("");
+  const [playerChoice, setPlayerChoice]= useState("")
 
   const handleAiChoice = () => {
     const options = ["attackOne", "attackTwo", "attackThree", "attackFour"];
@@ -153,9 +213,23 @@ const BattleBrock = () => {
     const option = event.taget.value
     setPlayerChoice(option)
 
+  } // from button click handlefonction
+  const attack = (({attacker, receiver},option)=> {
+    const option = playerChoice  // attackOne, attackTwoc, ...
+    const damage = attacker.pokemonAttacks[option].damage
+    receiver.health -= damage
+  };
 
 
-  // const [battleTeam, setBattleTeam] = useState({ BattleTeamVariable})
+
+
+
+
+  /*     console.log(
+    playerTeam[0].sprites.versions["generation-v"]["black-white"].animated
+      .back_default
+  ); */
+
 
   const [battleTeam, setBattleTeam] = useState({
     pokemon1: {
